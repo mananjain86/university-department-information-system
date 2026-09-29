@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="University Department Information System — Manage students, courses, grades, inventory, accounts, research projects, and publications." />
+  <title>Department Information System</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+<button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="app-layout">
+  <!-- ═══════ SIDEBAR ═══════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <h1>Department<br />Information System</h1>
+      <div class="subtitle">University Admin Portal</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <div class="nav-item active" data-page="dashboard" id="nav-dashboard">
+        <span class="nav-icon">◈</span> Dashboard
+      </div>
+
+      <div class="nav-section-label">Academic</div>
+      <div class="nav-item" data-page="students" id="nav-students">
+        <span class="nav-icon">⊞</span> Students
+      </div>
+      <div class="nav-item" data-page="courses" id="nav-courses">
+        <span class="nav-icon">▤</span> Courses
+      </div>
+      <div class="nav-item" data-page="registrations" id="nav-registrations">
+        <span class="nav-icon">⊕</span> Registration
+      </div>
+      <div class="nav-item" data-page="grades" id="nav-grades">
+        <span class="nav-icon">◆</span> Grades
+      </div>
+
+      <div class="nav-section-label">Administration</div>
+      <div class="nav-item" data-page="inventory" id="nav-inventory">
+        <span class="nav-icon">▦</span> Inventory
+      </div>
+      <div class="nav-item" data-page="accounts" id="nav-accounts">
+        <span class="nav-icon">◉</span> Accounts
+      </div>
+
+      <div class="nav-section-label">Research</div>
+      <div class="nav-item" data-page="faculty" id="nav-faculty">
+        <span class="nav-icon">⊡</span> Faculty
+      </div>
+      <div class="nav-item" data-page="research" id="nav-research">
+        <span class="nav-icon">◇</span> Research &amp; Publications
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      SE Lab Project · 2024-25
+    </div>
+  </aside>
+
+  <!-- ═══════ MAIN CONTENT ═══════ -->
+  <main class="main-content">
+
+    <!-- ──── DASHBOARD ──── -->
+    <section class="page-section active" id="page-dashboard">
+      <div class="page-header">
+        <div>
+          <h2>Dashboard</h2>
+          <div class="page-desc">Department overview at a glance</div>
+        </div>
+      </div>
+      <div class="stats-grid" id="dashboardStats"></div>
+      <div class="two-col">
+        <div class="table-container">
+          <div class="table-header"><h3>Recent Transactions</h3></div>
+          <table>
+            <thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Amount</th></tr></thead>
+            <tbody id="dashboardTransactions"></tbody>
+          </table>
+        </div>
+        <div class="table-container">
+          <div class="table-header"><h3>Account Summary</h3></div>
+          <div id="dashboardAccountSummary" style="padding: 24px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ──── STUDENTS ──── -->
+    <section class="page-section" id="page-students">
+      <div class="page-header">
+        <div>
+          <h2>Students</h2>
+          <div class="page-desc">Manage student admissions and query details</div>
+        </div>
+        <div class="search-bar">
+          <input type="text" id="studentSearchInput" placeholder="Enter Roll Number…" />
+          <button class="btn btn-primary btn-sm" id="studentSearchBtn">Query</button>
+        </div>
+      </div>
+
+      <div id="studentDetail" style="display: none;"></div>
+
+      <div class="form-section">
+        <h3>Add New Student</h3>
+        <form id="addStudentForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="sRollNo">Roll Number</label>
+              <input type="text" id="sRollNo" placeholder="e.g. 2024CS004" required />
+            </div>
+            <div class="form-group">
+              <label for="sName">Full Name</label>
+              <input type="text" id="sName" placeholder="e.g. Arjun Mehta" required />
+            </div>
+            <div class="form-group">
+              <label for="sAddress">Address</label>
+              <input type="text" id="sAddress" placeholder="e.g. 22 Lake Road, Mumbai" />
+            </div>
+          </div>
+          <div class="btn-actions">
+            <button type="submit" class="btn btn-primary">Add Student</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="table-container">
+        <div class="table-header"><h3>All Students</h3></div>
+        <table>
+          <thead><tr><th>Roll No</th><th>Name</th><th>Address</th><th>Action</th></tr></thead>
+          <tbody id="studentsTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ──── COURSES ──── -->
+    <section class="page-section" id="page-courses">
+      <div class="page-header">
+        <div>
+          <h2>Courses</h2>
+          <div class="page-desc">Department course catalog</div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Add New Course</h3>
+        <form id="addCourseForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="cId">Course ID</label>
+              <input type="text" id="cId" placeholder="e.g. CS401" required />
+            </div>
+            <div class="form-group">
+              <label for="cName">Course Name</label>
+              <input type="text" id="cName" placeholder="e.g. Machine Learning" required />
+            </div>
+            <div class="form-group">
+              <label for="cCredits">Credits</label>
+              <input type="number" id="cCredits" value="3" min="1" max="6" required />
+            </div>
+          </div>
+          <div class="btn-actions">
+            <button type="submit" class="btn btn-primary">Add Course</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="table-container">
+        <div class="table-header"><h3>All Courses</h3></div>
+        <table>
+          <thead><tr><th>Course ID</th><th>Name</th><th>Credits</th></tr></thead>
+          <tbody id="coursesTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ──── REGISTRATIONS ──── -->
+    <section class="page-section" id="page-registrations">
+      <div class="page-header">
+        <div>
+          <h2>Course Registration</h2>
+          <div class="page-desc">Register students for courses — tracks completed and backlog status</div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Register for Course</h3>
+        <form id="addRegistrationForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="regRollNo">Student Roll No</label>
+              <select id="regRollNo" required><option value="">Select student…</option></select>
+            </div>
+            <div class="form-group">
+              <label for="regCourseId">Course</label>
+              <select id="regCourseId" required><option value="">Select course…</option></select>
+            </div>
+            <div class="form-group">
+              <label for="regSemester">Semester</label>
+              <input type="text" id="regSemester" placeholder="e.g. Spring 2025" required />
+            </div>
+          </div>
+          <div class="btn-actions">
+            <button type="submit" class="btn btn-primary">Register</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="table-container">
+        <div class="table-header">
+          <h3>Registration Records</h3>
+          <div class="search-bar">
+            <input type="text" id="regFilterRoll" placeholder="Filter by Roll No…" />
+            <button class="btn btn-secondary btn-sm" id="regFilterBtn">Filter</button>
+          </div>
+        </div>
+        <table>
+          <thead><tr><th>Roll No</th><th>Student</th><th>Course</th><th>Semester</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody id="registrationsTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ──── GRADES ──── -->
+    <section class="page-section" id="page-grades">
+      <div class="page-header">
+        <div>
+          <h2>Grades &amp; Grade Sheets</h2>
+          <div class="page-desc">Enter grades and generate SGPA / CGPA grade sheets</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="form-section">
+          <h3>Enter Grade</h3>
+          <form id="addGradeForm">
+            <div class="form-grid" style="grid-template-columns: 1fr;">
+              <div class="form-group">
+                <label for="grRollNo">Student Roll No</label>
+                <select id="grRollNo" required><option value="">Select student…</option></select>
+              </div>
+              <div class="form-group">
+                <label for="grCourseId">Course</label>
+                <select id="grCourseId" required><option value="">Select course…</option></select>
+              </div>
+              <div class="form-group">
+                <label for="grSemester">Semester</label>
+                <input type="text" id="grSemester" placeholder="e.g. Fall 2024" required />
+              </div>
+              <div class="form-group">
+                <label for="grGradePoint">Grade Point (0-10)</label>
+                <input type="number" id="grGradePoint" step="0.5" min="0" max="10" placeholder="e.g. 8.5" required />
+              </div>
+            </div>
+            <div class="btn-actions">
+              <button type="submit" class="btn btn-primary">Submit Grade</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="form-section">
+          <h3>Generate Grade Sheet</h3>
+          <form id="generateGradeSheetForm">
+            <div class="form-grid" style="grid-template-columns: 1fr;">
+              <div class="form-group">
+                <label for="gsRollNo">Student Roll No</label>
+                <select id="gsRollNo" required><option value="">Select student…</option></select>
+              </div>
+              <div class="form-group">
+                <label for="gsSemester">Semester</label>
+                <input type="text" id="gsSemester" placeholder="e.g. Fall 2024" required />
+              </div>
+            </div>
+            <div class="btn-actions">
+              <button type="submit" class="btn btn-primary">Generate</button>
+            </div>
+          </form>
+          <div id="gradeSheetResult" style="margin-top: 16px;"></div>
+        </div>
+      </div>
+
+      <div class="table-container" style="margin-top: 24px;">
+        <div class="table-header"><h3>All Grades</h3></div>
+        <table>
+          <thead><tr><th>Roll No</th><th>Student</th><th>Course</th><th>Semester</th><th>Grade Point</th><th>Status</th></tr></thead>
+          <tbody id="gradesTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ──── INVENTORY ──── -->
+    <section class="page-section" id="page-inventory">
+      <div class="page-header">
+        <div>
+          <h2>Inventory</h2>
+          <div class="page-desc">Track department equipment, furniture, and other items</div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Add Inventory Item</h3>
+        <form id="addInventoryForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="invId">Item ID</label>
+              <input type="text" id="invId" placeholder="e.g. INV006" required />
+            </div>
+            <div class="form-group">
+              <label for="invName">Item Name</label>
+              <input type="text" id="invName" placeholder="e.g. Whiteboard Marker Set" required />
+            </div>
+            <div class="form-group">
+              <label for="invLocation">Location</label>
+              <input type="text" id="invLocation" placeholder="e.g. Lab 102" required />
+            </div>
+            <div class="form-group">
+              <label for="invQuantity">Quantity</label>
+              <input type="number" id="invQuantity" value="1" min="1" required />
+            </div>
+          </div>
+          <div class="btn-actions">
+            <button type="submit" class="btn btn-primary">Add Item</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="table-container">
+        <div class="table-header"><h3>Inventory Items</h3></div>
+        <table>
+          <thead><tr><th>Item ID</th><th>Name</th><th>Location</th><th>Qty</th><th>Actions</th></tr></thead>
+          <tbody id="inventoryTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ──── ACCOUNTS ──── -->
+    <section class="page-section" id="page-accounts">
+      <div class="page-header">
+        <div>
+          <h2>Department Accounts</h2>
+          <div class="page-desc">Track income, expenditure, and balance — cash book query</div>
+        </div>
+      </div>
+
+      <div class="account-summary" id="accountSummary"></div>
+
+      <div class="two-col">
+        <div class="form-section">
+          <h3>Update Grants</h3>
+          <form id="updateGrantsForm">
+            <div class="form-grid" style="grid-template-columns: 1fr;">
+              <div class="form-group">
+                <label for="accGrant">Annual Grant (₹)</label>
+                <input type="number" id="accGrant" step="1000" min="0" required />
+              </div>
+              <div class="form-group">
+                <label for="accConsultancy">Consultancy Funds (₹)</label>
+                <input type="number" id="accConsultancy" step="1000" min="0" required />
+              </div>
+            </div>
+            <div class="btn-actions">
+              <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+          </form>
+        </div>
+        <div class="form-section">
+          <h3>Add Transaction</h3>
+          <form id="addTransactionForm">
+            <div class="form-grid" style="grid-template-columns: 1fr;">
+              <div class="form-group">
+                <label for="txDate">Date</label>
+                <input type="date" id="txDate" required />
+              </div>
+              <div class="form-group">
+                <label for="txAmount">Amount (₹)</label>
+                <input type="number" id="txAmount" step="100" min="0" required />
+              </div>
+              <div class="form-group">
+                <label for="txType">Type</label>
+                <select id="txType" required>
+                  <option value="income">Income</option>
+                  <option value="expenditure">Expenditure</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="txDesc">Description</label>
+                <input type="text" id="txDesc" placeholder="e.g. Lab equipment purchase" required />
+              </div>
+            </div>
+            <div class="btn-actions">
+              <button type="submit" class="btn btn-primary">Add Transaction</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="table-container" style="margin-top: 24px;">
+        <div class="table-header"><h3>Transaction History</h3></div>
+        <table>
+          <thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Amount</th></tr></thead>
+          <tbody id="transactionsTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ──── FACULTY ──── -->
+    <section class="page-section" id="page-faculty">
+      <div class="page-header">
+        <div>
+          <h2>Faculty</h2>
+          <div class="page-desc">Department faculty records</div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Add Faculty</h3>
+        <form id="addFacultyForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="facId">Faculty ID</label>
+              <input type="text" id="facId" placeholder="e.g. FAC004" required />
+            </div>
+            <div class="form-group">
+              <label for="facName">Full Name</label>
+              <input type="text" id="facName" placeholder="e.g. Dr. Sanjay Gupta" required />
+            </div>
+          </div>
+          <div class="btn-actions">
+            <button type="submit" class="btn btn-primary">Add Faculty</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="table-container">
+        <div class="table-header"><h3>All Faculty</h3></div>
+        <table>
+          <thead><tr><th>Faculty ID</th><th>Name</th></tr></thead>
+          <tbody id="facultyTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ──── RESEARCH & PUBLICATIONS ──── -->
+    <section class="page-section" id="page-research">
+      <div class="page-header">
+        <div>
+          <h2>Research &amp; Publications</h2>
+          <div class="page-desc">Track research projects and faculty publications</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="form-section">
+          <h3>Add Research Project</h3>
+          <form id="addResearchForm">
+            <div class="form-grid" style="grid-template-columns: 1fr;">
+              <div class="form-group">
+                <label for="rpId">Project ID</label>
+                <input type="text" id="rpId" placeholder="e.g. RP004" required />
+              </div>
+              <div class="form-group">
+                <label for="rpTitle">Title</label>
+                <input type="text" id="rpTitle" placeholder="Project title" required />
+              </div>
+              <div class="form-group">
+                <label for="rpFunding">Funding Source</label>
+                <input type="text" id="rpFunding" placeholder="e.g. DST-SERB" />
+              </div>
+              <div class="form-group">
+                <label for="rpStatus">Status</label>
+                <select id="rpStatus">
+                  <option value="ongoing">Ongoing</option>
+                  <option value="completed">Completed</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="rpFaculty">Faculty</label>
+                <select id="rpFaculty"><option value="">Select faculty…</option></select>
+              </div>
+            </div>
+            <div class="btn-actions">
+              <button type="submit" class="btn btn-primary">Add Project</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="form-section">
+          <h3>Add Publication</h3>
+          <form id="addPublicationForm">
+            <div class="form-grid" style="grid-template-columns: 1fr;">
+              <div class="form-group">
+                <label for="pubTitle">Title</label>
+                <input type="text" id="pubTitle" placeholder="Paper title" required />
+              </div>
+              <div class="form-group">
+                <label for="pubJournal">Journal / Conference</label>
+                <input type="text" id="pubJournal" placeholder="e.g. IEEE Trans." />
+              </div>
+              <div class="form-group">
+                <label for="pubDate">Published Date</label>
+                <input type="date" id="pubDate" />
+              </div>
+              <div class="form-group">
+                <label for="pubFaculty">Faculty</label>
+                <select id="pubFaculty"><option value="">Select faculty…</option></select>
+              </div>
+            </div>
+            <div class="btn-actions">
+              <button type="submit" class="btn btn-primary">Add Publication</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="table-container" style="margin-top: 24px;">
+        <div class="table-header"><h3>Research Projects</h3></div>
+        <table>
+          <thead><tr><th>ID</th><th>Title</th><th>Funding</th><th>Faculty</th><th>Status</th></tr></thead>
+          <tbody id="researchTable"></tbody>
+        </table>
+      </div>
+
+      <div class="table-container">
+        <div class="table-header"><h3>Publications</h3></div>
+        <table>
+          <thead><tr><th>Title</th><th>Journal</th><th>Date</th><th>Faculty</th></tr></thead>
+          <tbody id="publicationsTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="/js/app.js"></script>
+</body>
+</html>

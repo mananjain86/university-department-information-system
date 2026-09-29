@@ -1,0 +1,5 @@
+node_modules/
+department.db
+department.db-shm
+department.db-wal
+.DS_Store
